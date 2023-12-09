@@ -17,7 +17,7 @@ public:
     
     bonjour_named(const char *name, const char *regtype, const char *domain)
     : bonjour_base(regtype, domain)
-    , m_name(name)
+    , m_name(impl::validate_name(name))
     {}
     
     const char *name() const

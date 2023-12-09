@@ -4,6 +4,8 @@
 
 #include <sys/select.h>
 
+#include <cstring>
+
 namespace impl
 {
     int wait_on_socket(int socket, int timeout_secs, int timeout_usecs)
@@ -25,6 +27,21 @@ namespace impl
         FD_SET(socket, &read);
             
         return select(socket + 1, &read, &write, &except, &timeout);
+    }
+    
+    std::string validate_name(const char *name)
+    {
+        return name;
+    }
+    
+    std::string validate_regtype(const char *regtype)
+    {
+        return regtype;
+    }
+    
+    std::string validate_domain(const char *domain)
+    {
+        return (!domain || !strlen(domain)) ? "local." : domain;
     }
 }
 

@@ -101,8 +101,8 @@ private:
 public:
   
     bonjour_base(const char *regtype, const char *domain)
-    : m_regtype(regtype)
-    , m_domain(domain)
+    : m_regtype(impl::validate_regtype(regtype))
+    , m_domain(impl::validate_domain(domain))
     , m_thread(nullptr)
     {}
     
@@ -146,7 +146,7 @@ public:
     
     const char *domain() const
     {
-        return m_domain.empty() ? "local." : m_domain.c_str();
+        return m_domain.c_str();
     }
     
 protected:
