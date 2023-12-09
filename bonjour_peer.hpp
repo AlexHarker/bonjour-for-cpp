@@ -99,12 +99,12 @@ public:
         
         for (auto it = m_peers.begin(); it != m_peers.end(); it++)
         {
-            auto jt = it->find(services);
+            const auto jt = it->find(services);
             
             if (jt == services.end())
-                it = m_peers.erase(it);
+                it = --m_peers.erase(it);
             else
-                jt = services.erase(jt);
+                services.erase(jt);
         }
         
         // Add any new items to the list (noting if self-discovery is allowed)
