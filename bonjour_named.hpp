@@ -31,7 +31,7 @@ public:
     }
     
     template <class T, std::enable_if_t<std::is_base_of<bonjour_named, T>::value, bool> = true>
-    typename std::list<T>::iterator find(std::list<T>& list)
+    typename std::list<T>::iterator find(std::list<T>& list) const
     {
         for (auto it = list.begin(); it != list.end(); it++)
             if (it->equal(*this))

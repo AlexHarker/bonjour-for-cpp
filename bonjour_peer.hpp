@@ -85,6 +85,16 @@ public:
             it->resolve();
     }
     
+    void resolve(const bonjour_named& service)
+    {
+        std::unique_lock<std::mutex> lock(m_mutex);
+        
+        auto it = service.find(m_peers);
+        
+        if (it != m_peers.end())
+            it->resolve();
+    }
+    
     void list_peers(std::list<bonjour_service> &peers)
     {
         std::list<bonjour_named> services;
