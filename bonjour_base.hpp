@@ -26,7 +26,7 @@ class bonjour_base
 protected:
     
     using mutex_type = std::recursive_mutex;
-    using mutex_lock = std::unique_lock<mutex_type>;
+    using mutex_lock = std::lock_guard<mutex_type>;
     
 private:
     
