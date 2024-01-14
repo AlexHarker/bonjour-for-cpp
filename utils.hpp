@@ -5,6 +5,7 @@
 #include <sys/select.h>
 
 #include <cstring>
+#include <string>
 
 namespace impl
 {
