@@ -77,6 +77,11 @@ public:
         return m_register.domain();
     }
     
+    uint16_t port() const
+    {
+        return m_register.port();
+    }
+    
     void resolve()
     {
         std::unique_lock<std::mutex> lock(m_mutex);

@@ -46,6 +46,11 @@ public:
         return spawn(this, name(), regtype(), domain(), nullptr, m_port, 0, nullptr);
     }
     
+    uint16_t port() const
+    {
+        return m_port;
+    }
+    
 private:
     
     void reply(DNSServiceFlags flags, const char *name, const char *regtype, const char *domain)
