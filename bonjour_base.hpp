@@ -7,6 +7,7 @@
 #include "utils.hpp"
 
 #include <cstring>
+#include <cstdint>
 #include <mutex>
 #include <string>
 #include <thread>
