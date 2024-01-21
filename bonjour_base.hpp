@@ -128,8 +128,10 @@ public:
     {
         if (active())
         {
-            mutex_lock lock(m_mutex);
+            // N.B. Don't hold the lock whilst stopping the thread as that can cause deadlocks
+            
             m_thread->stop();
+            mutex_lock lock(m_mutex);
             m_thread = nullptr;
         }
     }
