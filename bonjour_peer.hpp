@@ -34,7 +34,10 @@ public:
     : m_options(options)
     , m_register(name, regtype, domain, port)
     , m_browse(regtype, domain)
-    {}
+    , m_this_service(m_register)
+    {
+        m_this_service.resolve();
+    }
     
     bool start()
     {
@@ -133,12 +136,18 @@ public:
         peers = m_peers;
     }
     
+    std::string resolved_host() const
+    {
+        return m_this_service.host();
+    }
+    
 private:
     
     bonjour_peer_options m_options;
     
     bonjour_register m_register;
     bonjour_browse m_browse;
+    bonjour_service m_this_service;
     
     mutable std::mutex m_mutex;
     std::list<bonjour_service> m_peers;
