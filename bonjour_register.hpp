@@ -26,6 +26,18 @@ public:
         bonjour_notify<bonjour_register>::state_type m_remove = nullptr;
     };
     
+    /**
+     * @brief Constructs a bonjour_register object.
+     *
+     * @param name The name of the service.
+     * @param regtype The type of service being registered.
+     * @param domain The domain in which the service is registered.
+     * @param port The port number on which the service will be available.
+     * @param notify Optional parameter for providing notification callbacks, defaults to an empty notify_type.
+     *
+     * This constructor initializes the Bonjour service with the provided name, type, domain, and port,
+     * and optionally accepts a notify_type struct to handle service-related notifications.
+     */
     bonjour_register(const char *name,
                      const char *regtype,
                      const char *domain,
@@ -41,11 +53,29 @@ public:
     void operator = (bonjour_register const& rhs) = delete;
     void operator = (bonjour_register const&& rhs) = delete;
     
+    /**
+     * @brief Starts the Bonjour service registration process.
+     *
+     * @return true if the service registration was successfully started, false otherwise.
+     *
+     * This method initiates the registration of the Bonjour service using the parameters
+     * provided when the `bonjour_register` object was constructed. It returns a boolean
+     * value indicating whether the registration process was successfully initiated.
+     */
     bool start()
     {
         return spawn(this, name(), regtype(), domain(), nullptr, m_port, 0, nullptr);
     }
     
+    /**
+     * @brief Retrieves the port number on which the Bonjour service is running.
+     *
+     * @return The port number as an unsigned 16-bit integer.
+     *
+     * This method returns the port number that was specified during the construction of the
+     * `bonjour_register` object. It provides a way to access the port on which the Bonjour
+     * service is currently registered and running.
+     */
     uint16_t port() const
     {
         return m_port;
@@ -53,6 +83,20 @@ public:
     
 private:
     
+    /**
+     * @brief Handles the reply from the DNSServiceRegister call.
+     *
+     * @param flags Flags that provide additional information about the reply.
+     * @param name The name of the service being registered.
+     * @param regtype The type of service being registered.
+     * @param domain The domain in which the service is registered.
+     *
+     * This method is invoked as a callback when the Bonjour service registration process
+     * receives a reply. It processes the information returned by the DNS service, which
+     * includes the flags, service name, type, and domain. This method typically handles
+     * tasks such as confirming the registration status or updating internal state based on
+     * the service registration results.
+     */
     void reply(DNSServiceFlags flags, const char *name, const char *regtype, const char *domain)
     {
         bool complete = (flags & kDNSServiceFlagsMoreComing) == 0;
