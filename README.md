@@ -9,7 +9,7 @@ A lightweight header-only library for Bonjour service discovery and advertising.
 
 Getting started:
 ---------------------------------
-- Include bonjour-for-cpp.hpp (this includes all other required headers) 
+- Include include/bonjour-for-cpp.hpp (this includes all other required headers) 
 - Try the bonjour_peer class which allows service discovery, advertising and resolution in one simple object
 - You can also use lower-level constructs (bonjour_register / bonjour_browse / bonjour_service) if required.
 
