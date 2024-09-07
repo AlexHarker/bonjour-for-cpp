@@ -1,4 +1,15 @@
 
+/**
+ * @file bonjour_service.hpp
+ * @brief Class for resolving Bonjour services.
+ *
+ * This file defines the `bonjour_service` class, which is responsible for resolving
+ * a named Bonjour service. It extends the `bonjour_named` class, allowing the
+ * retrieval of detailed information about a service, such as its network address
+ * and port. The class provides callback mechanisms for handling resolution events,
+ * including stopping and resolving services within a network.
+ */
+
 #ifndef BONJOUR_SERVICE_HPP
 #define BONJOUR_SERVICE_HPP
 
@@ -37,6 +48,7 @@ public:
      * @param notify An optional notification callback of type `notify_type` for handling service-related events.
      *               If no callback is provided, a default-constructed `notify_type` is used.
      */
+    
     bonjour_service(bonjour_named named, notify_type notify = notify_type())
     : bonjour_named(named)
     , m_port(0)
@@ -61,6 +73,7 @@ public:
      * @param notify An optional notification callback of type `notify_type` for handling service-related events.
      *               If no callback is provided, a default-constructed `notify_type` is used.
      */
+    
     bonjour_service(const char *name, const char *regtype, const char *domain, notify_type notify = notify_type())
     : bonjour_service(bonjour_named(name, regtype, domain), notify)
     {}
@@ -77,6 +90,7 @@ public:
      * @param rhs The `bonjour_service` object to be copied. The copied instance will have
      *            its service name, registration type, and domain initialized to empty strings.
      */
+    
     bonjour_service(bonjour_service const& rhs)
     : bonjour_named("", "", "")
     {
@@ -96,6 +110,7 @@ public:
      *            from this object.
      * @return A reference to the current `bonjour_service` object after assignment.
      */
+    
     void operator = (bonjour_service const& rhs)
     {
         mutex_lock lock1(m_mutex);
@@ -122,6 +137,7 @@ public:
      * @return `true` if the service resolution was successful and the service details were retrieved,
      *         `false` otherwise (e.g., if the service could not be resolved or an error occurred).
      */
+    
     bool resolve()
     {
         return spawn(this, name(), regtype(), domain());
@@ -136,6 +152,7 @@ public:
      *
      * @return A `std::string` containing the full name of the Bonjour service.
      */
+    
     std::string fullname() const
     {
         mutex_lock lock(m_mutex);
@@ -152,6 +169,7 @@ public:
      *
      * @return A `std::string` containing the hostname of the Bonjour service.
      */
+    
     std::string host() const
     {
         mutex_lock lock(m_mutex);
@@ -168,6 +186,7 @@ public:
      *
      * @return A `uint16_t` representing the port number of the Bonjour service.
      */
+    
     uint16_t port() const
     {
         mutex_lock lock(m_mutex);
@@ -193,6 +212,7 @@ private:
      *             or a domain name.
      * @param port The port number on which the Bonjour service is listening for connections.
      */
+    
     void reply(DNSServiceFlags flags, const char *fullname, const char *host, uint16_t port)
     {
         bool complete = (flags & kDNSServiceFlagsMoreComing) == 0;

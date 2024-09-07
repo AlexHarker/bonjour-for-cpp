@@ -1,4 +1,15 @@
 
+/**
+ * @file bonjour_browse.hpp
+ * @brief Class for browsing Bonjour services on a network.
+ *
+ * This file defines the `bonjour_browse` class, which is responsible for
+ * discovering Bonjour services available on the network. The class provides
+ * mechanisms for browsing services and maintains a list of discovered services,
+ * without resolving their details. It extends `bonjour_base` and uses callback
+ * mechanisms to handle service addition and removal events.
+ */
+
 #ifndef BONJOUR_BROWSE_HPP
 #define BONJOUR_BROWSE_HPP
 
@@ -44,6 +55,7 @@ public:
      * notification callbacks for service events. If not provided, a default
      * `notify_type` instance is used.
      */
+    
     bonjour_browse(const char *regtype, const char *domain, notify_type notify = notify_type())
     : bonjour_base(regtype, domain)
     , m_notify(notify)
@@ -63,6 +75,7 @@ public:
      *
      * @return True if the browsing service starts successfully; otherwise, false.
      */
+    
     bool start()
     {
         clear();
@@ -77,6 +90,7 @@ public:
      * It is typically called to reset the service list before starting a new
      * browse operation or when the browsing is stopped.
      */
+    
     void clear()
     {
         mutex_lock lock(m_mutex);
@@ -93,6 +107,7 @@ public:
      * @param services A reference to a list that will be populated with the current
      * list of discovered services.
      */
+    
     void list_services(std::list<bonjour_named> &services)
     {
         mutex_lock lock(m_mutex);
@@ -116,6 +131,7 @@ private:
      * @param regtype The registration type of the service.
      * @param domain The domain in which the service resides.
      */
+    
     void reply(DNSServiceFlags flags, const char *name, const char *regtype, const char *domain)
     {
         bool complete = (flags & kDNSServiceFlagsMoreComing) == 0;

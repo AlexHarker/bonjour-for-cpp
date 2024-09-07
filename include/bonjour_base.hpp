@@ -1,4 +1,15 @@
 
+/**
+ * @file bonjour_base.hpp
+ * @brief Base class for managing Bonjour service interactions.
+ *
+ * This file defines the `bonjour_base` class, which provides the foundational
+ * mechanisms for managing Bonjour services. It includes functionality for
+ * handling service discovery, registration, and resolution in a network,
+ * utilizing threads and mutexes for synchronization. The class also interacts
+ * with the Bonjour API through DNS-SD and manages service notifications and states.
+ */
+
 #ifndef BONJOUR_BASE_HPP
 #define BONJOUR_BASE_HPP
 
@@ -49,6 +60,7 @@ private:
          * @return A pointer to a bonjour_thread object that encapsulates the thread running the service.
          *         Returns nullptr if the service could not be started.
          */
+        
         static bonjour_thread *start_service(DNSServiceRef sd_ref)
         {
             return new bonjour_thread(sd_ref);
@@ -60,6 +72,7 @@ private:
          * This method halts the running Bonjour service associated with the current object. It ensures
          * that the service is properly shut down and any associated resources are released.
          */
+        
         void stop()
         {
             mutex_lock lock(m_mutex);
@@ -78,6 +91,7 @@ private:
          * @param sd_ref A reference to a DNSServiceRef that represents the Bonjour service to be managed
          *               by this thread. This reference is used for managing the network service discovery.
          */
+        
         bonjour_thread(DNSServiceRef sd_ref)
         : m_sd_ref(sd_ref)
         , m_invalid(false)
@@ -92,6 +106,7 @@ private:
          * associated with the thread are released. It cleans up any remaining resources when a
          * bonjour_thread object is destroyed.
          */
+        
         ~bonjour_thread()
         {
             if (m_thread.joinable())
@@ -109,6 +124,7 @@ private:
          *               The method uses this object to manage the state and operation of the
          *               Bonjour service.
          */
+        
         static void do_loop(bonjour_thread *thread)
         {
             thread->loop();
@@ -121,6 +137,7 @@ private:
          * handles incoming events and processes them as long as the service is active. The loop
          * operates until the service is either stopped manually or an error condition is encountered.
          */
+        
         void loop()
         {
             bool exit = false;
@@ -167,6 +184,7 @@ public:
      * @param domain  A C-string representing the domain in which the service will be registered.
      *                This string is validated before use.
      */
+    
     bonjour_base(const char *regtype, const char *domain)
     : m_regtype(impl::validate_regtype(regtype))
     , m_domain(impl::validate_domain(domain))
@@ -180,6 +198,7 @@ public:
      * associated with the bonjour_base object are released. If a service thread is running, it is
      * stopped and cleaned up to prevent resource leaks or dangling pointers.
      */
+    
     ~bonjour_base()
     {
         stop();
@@ -195,6 +214,7 @@ public:
      *
      * @param rhs A reference to the bonjour_base object to be copied.
      */
+    
     bonjour_base(bonjour_base const& rhs)
     : m_thread(nullptr)
     {
@@ -212,6 +232,7 @@ public:
      *
      * @param rhs A reference to the bonjour_base object to be assigned to the target object.
      */
+    
     void operator = (bonjour_base const& rhs)
     {
         m_regtype = rhs.m_regtype;
@@ -226,6 +247,7 @@ public:
      * released, and the service thread is joined if it is still running. This prevents
      * resource leaks and ensures the orderly termination of the service.
      */
+    
     void stop()
     {
         if (active())
@@ -247,6 +269,7 @@ public:
      *
      * @return `true` if the Bonjour service is active and running; `false` otherwise.
      */
+    
     bool active() const
     {
         mutex_lock lock(m_mutex);
@@ -263,6 +286,7 @@ public:
      *
      * @return A C-string representing the registered service type.
      */
+    
     const char *regtype() const
     {
         return m_regtype.c_str();
@@ -278,6 +302,7 @@ public:
      *
      * @return A C-string representing the domain of the registered service.
      */
+    
     const char *domain() const
     {
         return m_domain.c_str();
@@ -300,6 +325,7 @@ protected:
      * @param args The arguments to be passed to the function. These arguments are
      *             forwarded to the callable object.
      */
+    
     template <typename T, typename ...Args>
     static void notify(T func, Args...args)
     {
@@ -324,6 +350,7 @@ protected:
      * @return `true` if the thread was successfully spawned and the function is running;
      *         `false` otherwise.
      */
+    
     template <typename T, typename ...Args>
     bool spawn(T *object, Args ...args)
     {
@@ -361,6 +388,7 @@ protected:
      * @param args The arguments to be passed to the function. These arguments are forwarded
      *             to the callable object to customize the stop notification.
      */
+    
     template <typename T, typename ...Args>
     void stop_notify(T func, Args...args)
     {
@@ -381,6 +409,7 @@ protected:
      * @tparam T The type of the object on which the function will be called.
      * @tparam Idxs A parameter pack representing the indices of the arguments to be passed to the function.
      */
+    
     template<class F, class T, size_t ...Idxs> struct callback_type
     {};
     
@@ -398,6 +427,7 @@ protected:
      * @tparam ErrIdx The index of the argument used for error handling or special processing.
      * @tparam Idxs A parameter pack representing the indices of the arguments to be passed to the function.
      */
+    
     template<typename R, typename... Args, class T, size_t ErrIdx, size_t ...Idxs>
     struct callback_type<R(*)(Args...), T, ErrIdx, Idxs...>
     {

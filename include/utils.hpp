@@ -1,3 +1,12 @@
+/**
+ * @file utils.hpp
+ * @brief Utility functions for socket operations and other helper methods.
+ *
+ * This file contains various utility functions that assist with socket operations,
+ * such as waiting for activity on a socket with a specified timeout. It provides
+ * low-level helper functions that can be used by other components in the project
+ * for network communication and timing-related tasks.
+ */
 
 #ifndef BONJOUR_FOR_CPP_UTILS_HPP
 #define BONJOUR_FOR_CPP_UTILS_HPP
@@ -23,6 +32,7 @@ namespace impl
      *         Returns 1 if there is activity on the socket within the timeout period.
      *         Returns -1 if an error occurs.
      */
+    
     int wait_on_socket(int socket, int timeout_secs, int timeout_usecs)
     {
         fd_set read, write, except;
@@ -57,6 +67,7 @@ namespace impl
      *         If the input name is invalid, the return value may be an empty string or an error string,
      *         depending on the implementation.
      */
+    
     std::string validate_name(const char *name)
     {
         return name;
@@ -75,6 +86,7 @@ namespace impl
      *         If the input regtype is invalid, the return value may be an empty string or a default
      *         error string, depending on the implementation.
      */
+    
     std::string validate_regtype(const char *regtype)
     {
         return regtype;
@@ -94,6 +106,7 @@ namespace impl
      *         If the input domain is invalid, the return value may be an empty string or a
      *         special error string, depending on the implementation.
      */
+    
     std::string validate_domain(const char *domain)
     {
         return (!domain || !strlen(domain)) ? "local." : domain;

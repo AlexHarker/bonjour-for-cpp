@@ -1,4 +1,16 @@
 
+/**
+ * @file bonjour_named.hpp
+ * @brief Represents a named Bonjour service.
+ *
+ * This file defines the `bonjour_named` class, which represents a Bonjour service
+ * by its name, registration type, and domain. It provides functionality for
+ * initializing and validating the service name but does not resolve the service.
+ * To resolve a service, the `bonjour_service` class should be used. This class
+ * extends the `bonjour_base` class, inheriting its core functionality for service
+ * management.
+ */
+
 #ifndef BONJOUR_NAMED_HPP
 #define BONJOUR_NAMED_HPP
 
@@ -26,6 +38,7 @@ public:
      * @param regtype The registration type of the Bonjour service (e.g., "_http._tcp").
      * @param domain The domain where the Bonjour service is registered (e.g., "local").
      */
+    
     bonjour_named(const char *name, const char *regtype, const char *domain)
     : bonjour_base(regtype, domain)
     , m_name(impl::validate_name(name))
@@ -38,6 +51,7 @@ public:
      *
      * @return A pointer to a constant character array representing the name of the Bonjour service.
      */
+    
     const char *name() const
     {
         return m_name.c_str();
@@ -53,6 +67,7 @@ public:
      * @return `true` if the name, registration type, and domain of both services are identical;
      *         `false` otherwise.
      */
+    
     bool equal(const bonjour_named& b)
     {
         return equal(name(), b.name()) && equal(regtype(), b.regtype()) && equal(domain(), b.domain());
@@ -80,6 +95,7 @@ private:
      * @param b A pointer to the second C-style string to compare.
      * @return `true` if the strings are identical; `false` otherwise.
      */
+    
     bool equal(const char *a, const char *b)
     {
         return !strcmp(a, b);

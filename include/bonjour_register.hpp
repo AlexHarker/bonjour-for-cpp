@@ -1,4 +1,15 @@
 
+/**
+ * @file bonjour_register.hpp
+ * @brief Class for registering Bonjour services in a network.
+ *
+ * This file defines the `bonjour_register` class, which is responsible for
+ * registering a named Bonjour service. It extends the `bonjour_named` class
+ * by adding the functionality to register the service with the DNSServiceRegister
+ * API. This class also handles callbacks related to the registration process,
+ * including stopping, adding, or removing services in the network.
+ */
+
 #ifndef BONJOUR_REGISTER_HPP
 #define BONJOUR_REGISTER_HPP
 
@@ -38,6 +49,7 @@ public:
      * This constructor initializes the Bonjour service with the provided name, type, domain, and port,
      * and optionally accepts a notify_type struct to handle service-related notifications.
      */
+    
     bonjour_register(const char *name,
                      const char *regtype,
                      const char *domain,
@@ -62,6 +74,7 @@ public:
      * provided when the `bonjour_register` object was constructed. It returns a boolean
      * value indicating whether the registration process was successfully initiated.
      */
+    
     bool start()
     {
         return spawn(this, name(), regtype(), domain(), nullptr, m_port, 0, nullptr);
@@ -76,6 +89,7 @@ public:
      * `bonjour_register` object. It provides a way to access the port on which the Bonjour
      * service is currently registered and running.
      */
+    
     uint16_t port() const
     {
         return m_port;
@@ -97,6 +111,7 @@ private:
      * tasks such as confirming the registration status or updating internal state based on
      * the service registration results.
      */
+    
     void reply(DNSServiceFlags flags, const char *name, const char *regtype, const char *domain)
     {
         bool complete = (flags & kDNSServiceFlagsMoreComing) == 0;

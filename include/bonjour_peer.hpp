@@ -1,4 +1,15 @@
 
+/**
+ * @file bonjour_peer.hpp
+ * @brief Class for managing a Bonjour peer with both browsing and registration capabilities.
+ *
+ * This file defines the `bonjour_peer` class, which represents a Bonjour peer capable
+ * of both browsing for services and registering its own services. The class provides
+ * options to configure the peer's mode of operation (browse-only, register-only, or both)
+ * and handles service resolution. It assumes external polling for updates and does not
+ * include built-in notification mechanisms.
+ */
+
 #ifndef BONJOUR_PEER_HPP
 #define BONJOUR_PEER_HPP
 
@@ -41,6 +52,7 @@ public:
      *
      * @note This constructor initializes both the service registration and browsing components of the Bonjour peer.
      */
+    
     bonjour_peer(const char *name,
                  const char *regtype,
                  const char *domain,
@@ -62,6 +74,7 @@ public:
      * @return true if the service was successfully started or was already running.
      * @return false if there was an error starting the service.
      */
+    
     bool start()
     {
         switch (m_options.m_mode)
@@ -87,6 +100,7 @@ public:
      * @note This method does not return a value and assumes that any required
      * cleanup is handled internally.
      */
+    
     void stop()
     {
         m_register.stop();
@@ -103,6 +117,7 @@ public:
      * @note This method should be called when you need to reinitialize or reset the peer
      * without affecting the running service.
      */
+    
     void clear()
     {
         m_browse.clear();
@@ -117,6 +132,7 @@ public:
      *
      * @return A constant character pointer representing the name of the Bonjour peer.
      */
+    
     const char *name() const
     {
         return m_register.name();
@@ -131,6 +147,7 @@ public:
      *
      * @return A constant character pointer representing the registration type of the service.
      */
+    
     const char *regtype() const
     {
         return m_register.regtype();
@@ -146,6 +163,7 @@ public:
      *
      * @return A constant character pointer representing the domain of the Bonjour service.
      */
+    
     const char *domain() const
     {
         return m_register.domain();
@@ -160,6 +178,7 @@ public:
      *
      * @return A 16-bit unsigned integer representing the port number of the Bonjour service.
      */
+    
     uint16_t port() const
     {
         return m_register.port();
@@ -176,6 +195,7 @@ public:
      * @note The method does not return a value, and the results of the resolution
      * are handled internally or through a callback mechanism.
      */
+    
     void resolve()
     {
         std::unique_lock<std::mutex> lock(m_mutex);
@@ -197,6 +217,7 @@ public:
      * @note The method does not return a value, and the results of the resolution
      * are handled internally or through a callback mechanism.
      */
+    
     void resolve(const bonjour_named& service)
     {
         std::unique_lock<std::mutex> lock(m_mutex);
@@ -219,6 +240,7 @@ public:
      *
      * @note The list is cleared before being populated with the current set of discovered peers.
      */
+    
     void list_peers(std::list<bonjour_service> &peers)
     {
         std::list<bonjour_named> services;
