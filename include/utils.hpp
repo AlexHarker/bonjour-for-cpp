@@ -36,6 +36,18 @@ namespace impl
     int wait_on_socket(int socket, int timeout_secs, int timeout_usecs)
     {
         fd_set read, write, except;
+        
+        /**
+         * @brief Struct representing a timeout duration.
+         *
+         * The `timeout` struct stores the time interval to be used for timeout operations.
+         * It consists of two fields: seconds (`tv_sec`) and microseconds (`tv_usec`),
+         * which together define the total duration of the timeout.
+         *
+         * This struct is typically used in socket operations or other system calls where
+         * a timeout period needs to be specified.
+         */
+        
         struct timeval timeout;
 
         // Timeout
