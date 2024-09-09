@@ -21,23 +21,103 @@
 // An object for browsing bonjour services
 // Makes a list of named services available, but does not resolve them
 
+/**
+ * @class bonjour_browse
+ * @brief Class responsible for browsing Bonjour services on a network.
+ *
+ * The bonjour_browse class is used to discover available Bonjour services
+ * on a network. It extends the bonjour_base class and provides mechanisms
+ * to detect and list services without resolving their details. This class
+ * handles the browsing and management of discovered services.
+ *
+ * @see bonjour_base
+ */
+
 class bonjour_browse : public bonjour_base
 {
 public:
 
     static constexpr auto service = DNSServiceBrowse;
     
+    /**
+    * @brief Type definition for the callback function used during service browsing.
+    *
+    * The callback function is invoked when services are added or removed
+    * from the Bonjour service list.
+    */
+    
     using callback = DNSServiceBrowseReply;
+    
+    /**
+     * @brief A specialized callback type used by the class to handle service events.
+     *
+     * This type is generated to specify the parameters and return type of the
+     * callback function that manages Bonjour service browsing events.
+     */
+    
     using callback_type = make_callback_type<bonjour_browse, 3, 1, 4, 5, 6>;
 
     friend callback_type;
-
+    
+    /**
+     * @struct notify_type
+     * @brief Structure used for managing notifications of Bonjour service events.
+     *
+     * This structure is responsible for encapsulating the information related to
+     * notifications received when Bonjour services are added, removed, or changed.
+     * It contains the necessary data and methods for handling these events within
+     * the bonjour_browse class.
+     */
+    
     struct notify_type
     {
         notify_type() : m_stop(nullptr), m_add(nullptr), m_remove(nullptr) {}
         
+        /**
+         * @var bonjour_browse::m_stop
+         * @brief Instance of stop_type used to manage stopping the Bonjour browsing service.
+         *
+         * This member variable holds an instance of the `stop_type` defined in the
+         * `bonjour_notify` class template for the `bonjour_browse` class. It is used
+         * to signal and manage the process of stopping the Bonjour browsing service,
+         * ensuring that the service browsing can be properly halted when necessary.
+         *
+         * @see bonjour_notify
+         * @see bonjour_browse
+         */
+        
         bonjour_notify<bonjour_browse>::stop_type m_stop;
+        
+        /**
+         * @var bonjour_browse::m_add
+         * @brief Instance of state_type used to manage the addition of Bonjour services.
+         *
+         * This member variable holds an instance of the `state_type` defined in the
+         * `bonjour_notify` class template for the `bonjour_browse` class. It is responsible
+         * for managing the state related to the addition of Bonjour services during the
+         * browsing process. This includes tracking when new services are discovered and
+         * notifying the appropriate components.
+         *
+         * @see bonjour_notify
+         * @see bonjour_browse
+         */
+        
         bonjour_notify<bonjour_browse>::state_type m_add;
+        
+        /**
+         * @var bonjour_browse::m_remove
+         * @brief Instance of state_type used to manage the removal of Bonjour services.
+         *
+         * This member variable holds an instance of the `state_type` defined in the
+         * `bonjour_notify` class template for the `bonjour_browse` class. It is responsible
+         * for managing the state related to the removal of Bonjour services during the
+         * browsing process. This includes tracking when services are removed and notifying
+         * the appropriate components to handle the service removal.
+         *
+         * @see bonjour_notify
+         * @see bonjour_browse
+         */
+        
         bonjour_notify<bonjour_browse>::state_type m_remove;
     };
     
@@ -157,6 +237,16 @@ private:
     }
     
     std::list<bonjour_named> m_services;
+    
+    /**
+     * @var bonjour_browse::m_notify
+     * @brief Instance of notify_type used for service event notifications.
+     *
+     * This member variable holds an instance of the notify_type structure, which is
+     * responsible for managing the notifications related to Bonjour services. It is
+     * used within the bonjour_browse class to track and handle service addition,
+     * removal, and changes during browsing.
+     */
     
     notify_type m_notify;
 };
