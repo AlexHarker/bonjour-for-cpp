@@ -18,16 +18,55 @@
 // An object for resolving a named bonjour service
 // This can be constructed from separate names, or a bonjour_named object
 
+/**
+ * @brief Represents a Bonjour service, inheriting from the `bonjour_named` class.
+ *
+ * The `bonjour_service` class extends the functionality of the `bonjour_named` class,
+ * adding support for managing and resolving Bonjour services. This class provides
+ * methods to interact with Bonjour, such as resolving service details, handling
+ * notifications, and managing service information like hostnames and port numbers.
+ */
+
 class bonjour_service : public bonjour_named
 {
 public:
     
     static constexpr auto service = DNSServiceResolve;
     
+    /**
+     * @brief Defines a type alias for the DNS service resolution callback function.
+     *
+     * This `using` directive creates an alias `callback` for the `DNSServiceResolveReply` type,
+     * which represents the function signature for handling DNS service resolution replies.
+     * It is used in Bonjour service resolution processes to respond to service discovery events.
+     */
+    
     using callback = DNSServiceResolveReply;
+    
+    /**
+     * @brief Defines a type alias for a callback type specific to the `bonjour_service` class.
+     *
+     * This `using` directive creates an alias `callback_type` by using the `make_callback_type`
+     * template. It generates a specific callback type for the `bonjour_service` class,
+     * tailored to handle service-related events. The template parameters (`3, 1, 4, 5, 6`)
+     * specify the exact arguments or structure of the callback, allowing for flexibility
+     * in how the callback handles different aspects of service resolution or notifications.
+     *
+     * This alias helps simplify and manage the definition of complex callback functions
+     * within the context of Bonjour service handling.
+     */
+    
     using callback_type = make_callback_type<bonjour_service, 3, 1, 4, 5, 6>;
     
     friend callback_type;
+    
+    /**
+     * @brief Represents a notification type for the Bonjour service.
+     *
+     * The `notify_type` struct defines a callback mechanism that allows the Bonjour service
+     * to notify interested parties about various events or state changes. It holds a function
+     * pointer that can be used to handle notifications, making it flexible for different use cases.
+     */
     
     struct notify_type
     {
@@ -225,10 +264,47 @@ private:
         
         notify(m_notify.m_resolve, this, fullname, host, port, complete);
     }
-            
+    
+    /**
+     * @brief Stores the full name of the Bonjour service.
+     *
+     * This member variable holds the full name of the Bonjour service, which typically
+     * includes the service name, registration type, and domain. The full name uniquely
+     * identifies the service within the Bonjour network and is used during service
+     * discovery and resolution.
+     */
+    
     std::string m_fullname;
+    
+    /**
+     * @brief Stores the hostname of the Bonjour service.
+     *
+     * This member variable holds the hostname associated with the Bonjour service,
+     * which may be a domain name or an IP address. The hostname is used to establish
+     * connections to the machine where the Bonjour service is running and is typically
+     * resolved during the service discovery process.
+     */
+    
     std::string m_host;
+    
+    /**
+     * @brief Stores the port number of the Bonjour service.
+     *
+     * This member variable holds the port number on which the Bonjour service is running.
+     * The port is used to establish network connections to the service once it has been
+     * discovered and resolved. It is typically obtained during the service resolution process.
+     */
+    
     uint16_t m_port;
+    
+    /**
+     * @brief Stores the notification callback for the Bonjour service.
+     *
+     * This member variable holds a `notify_type` object, which contains the callback function
+     * to be invoked when certain events or changes occur in the Bonjour service. The callback
+     * allows for customized handling of these notifications, such as responding to service
+     * updates or changes in status.
+     */
     
     notify_type m_notify;
 };

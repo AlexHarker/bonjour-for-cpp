@@ -21,6 +21,18 @@
 
 // Options for bonjour_peer
 
+/**
+ * @brief Contains configuration options for a Bonjour peer.
+ *
+ * The `bonjour_peer_options` struct holds various options that can be used to configure
+ * the behavior of a `bonjour_peer` object. These options may include settings such as
+ * whether to use a specific interface, enable certain network protocols, or apply
+ * additional constraints on service discovery and registration.
+ *
+ * @note These options are optional and can be provided during the initialization
+ * of a `bonjour_peer` object.
+ */
+
 struct bonjour_peer_options
 {
     enum class modes { browse_only, register_only, both };
@@ -32,6 +44,17 @@ struct bonjour_peer_options
 // An object that is a peer service (and so offers both registration and browsing)
 // This object resolves peers and assumes you will poll externally when required
 // It has no notification facilities
+
+/**
+ * @class bonjour_peer
+ * @brief Represents a Bonjour peer for peer-to-peer service discovery and communication.
+ *
+ * The `bonjour_peer` class encapsulates the functionality for registering, discovering,
+ * and resolving Bonjour services in a peer-to-peer network. It provides methods for
+ * starting and stopping the service, listing discovered peers, and resolving service
+ * details. The class handles both service registration and browsing to facilitate
+ * networked communication between peers.
+ */
 
 class bonjour_peer
 {
@@ -276,10 +299,49 @@ public:
     
 private:
     
+    /**
+     * @brief Stores the configuration options for the Bonjour peer.
+     *
+     * This member variable holds an instance of `bonjour_peer_options`, which contains
+     * the configuration options used to customize the behavior of the `bonjour_peer`.
+     * These options are set during the initialization of the peer and influence how
+     * the peer handles service registration, discovery, and other network behaviors.
+     */
+    
     bonjour_peer_options m_options;
     
+    /**
+     * @brief Handles the registration of the Bonjour service.
+     *
+     * This member variable is an instance of `bonjour_register`, which is responsible
+     * for managing the registration of the Bonjour service with the network. It stores
+     * the necessary information such as the service name, registration type, domain,
+     * and port. The registration allows the service to be discoverable by other peers.
+     */
+    
     bonjour_register m_register;
+    
+    /**
+     * @brief Handles the browsing and discovery of Bonjour services.
+     *
+     * This member variable is an instance of `bonjour_browse`, which is responsible
+     * for discovering Bonjour services on the network. It allows the peer to search for
+     * services of a specific registration type (regtype) within a domain. The discovered
+     * services can then be resolved for further details, such as host and port information.
+     */
+    
     bonjour_browse m_browse;
+    
+    /**
+     * @brief Mutex used for synchronizing access to shared data.
+     *
+     * This member variable is a mutable `std::mutex`, which is used to ensure thread-safe
+     * access to shared resources within the `bonjour_peer` class. The `mutable` keyword
+     * allows the mutex to be locked or unlocked even in `const` methods, ensuring safe
+     * concurrent operations on otherwise immutable member functions or data.
+     *
+     * @note This mutex helps prevent race conditions in a multithreaded environment.
+     */
     
     mutable std::mutex m_mutex;
     std::list<bonjour_service> m_peers;

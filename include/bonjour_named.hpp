@@ -23,6 +23,17 @@
 // A representation of a named bonjour service
 // Note that to resolve the named service you should use bonjour_service
 
+/**
+ * @class bonjour_named
+ * @brief Represents a named Bonjour service, inheriting from bonjour_base.
+ *
+ * The `bonjour_named` class is a specialized version of `bonjour_base`, which adds the functionality
+ * of managing a service name. This class provides methods to handle, compare, and retrieve the
+ * name of the Bonjour service.
+ *
+ * Inherits common Bonjour service functionality from the `bonjour_base` class.
+ */
+
 class bonjour_named : public bonjour_base
 {
 public:
@@ -100,6 +111,13 @@ private:
     {
         return !strcmp(a, b);
     }
+    
+    /**
+     * @brief Stores the validated name of the Bonjour service.
+     *
+     * This member variable holds the name of the Bonjour service as a `std::string`.
+     * The name is validated during initialization to ensure it meets the required format.
+     */
     
     std::string m_name;
 };

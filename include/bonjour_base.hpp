@@ -24,25 +24,119 @@
 #include <thread>
 
 template <class T>
+
+/**
+ * @brief Struct for handling notifications related to Bonjour service events.
+ *
+ * The `bonjour_notify` struct is used to manage and dispatch notifications related to
+ * Bonjour service events. It provides a mechanism to handle events such as service
+ * registration, resolution, and errors. This struct typically works in conjunction with
+ * other Bonjour service management components to notify relevant parts of the system
+ * when significant events occur.
+ */
+
 struct bonjour_notify
 {
+    /**
+     * @brief Type alias for a function pointer used to stop an object of type `T`.
+     *
+     * The `stop_type` alias defines a function pointer type that takes a pointer to an
+     * object of type `T` and returns `void`. This function pointer is typically used
+     * to specify a callback or handler responsible for stopping or cleaning up an
+     * object of type `T`.
+     *
+     * @tparam T The type of the object to be stopped by the function pointer.
+     */
+    
     using stop_type = void(*)(T *);
+    
+    /**
+     * @brief Type alias for a function pointer used to update or manage the state of an object of type `T`.
+     *
+     * The `state_type` alias defines a function pointer type that takes a pointer to an object of type `T`
+     * and several `const char*` parameters along with a boolean value. This function pointer is typically
+     * used to handle or update the state of the object by providing additional context or information
+     * through the string parameters and the boolean flag.
+     *
+     * @tparam T The type of the object whose state is being managed by the function pointer.
+     * @param const char* Parameters representing string information relevant to the state update.
+     * @param bool A flag indicating a specific state or condition.
+     */
+    
     using state_type = void(*)(T *, const char *, const char *, const char *, bool);
+    
+    /**
+     * @brief Type alias for a function pointer used to resolve service information for an object of type `T`.
+     *
+     * The `resolve_type` alias defines a function pointer type that takes a pointer to an object of type `T`,
+     * several `const char*` parameters representing service details, a `uint16_t` port number, and a boolean value.
+     * This function pointer is typically used to handle the resolution of service information, such as resolving
+     * the hostname, service type, port number, and whether the service is successfully resolved or not.
+     *
+     * @tparam T The type of the object for which the service resolution is being handled.
+     * @param const char* Parameters representing the hostname, service type, and domain of the resolved service.
+     * @param uint16_t The port number where the resolved service is available.
+     * @param bool A flag indicating whether the resolution was successful or not.
+     */
+    
     using resolve_type = void(*)(T *, const char *, const char *, uint16_t, bool);
 };
 
 // A base object to store information about bonjour services and to interact with the API
 
+/**
+ * @brief Base class for managing Bonjour service registration and operations.
+ *
+ * The `bonjour_base` class provides an interface for registering, managing, and
+ * controlling Bonjour services. It includes methods for starting, stopping, and
+ * monitoring the status of the service, as well as handling the underlying
+ * service-related resources. This class serves as a foundation for implementing
+ * Bonjour-based networking services.
+ */
+
 class bonjour_base
 {
 protected:
     
+    /**
+     * @brief Type alias for a recursive mutex used to manage thread synchronization.
+     *
+     * The `mutex_type` alias defines a type for `std::recursive_mutex`, which allows
+     * a thread to lock the same mutex multiple times without causing a deadlock.
+     * This type is typically used for thread-safe operations where a single thread
+     * may need to acquire the same lock multiple times in a recursive manner.
+     *
+     * This mutex ensures safe access to shared resources in multithreaded environments.
+     */
+    
     using mutex_type = std::recursive_mutex;
+    
+    /**
+     * @brief Type alias for a lock guard that manages the locking and unlocking of a recursive mutex.
+     *
+     * The `mutex_lock` alias defines a type for `std::lock_guard<mutex_type>`, which is a RAII-style
+     * mechanism to manage the locking and unlocking of a `mutex_type` (typically `std::recursive_mutex`).
+     * It automatically acquires the lock on construction and releases it when the lock guard goes out of scope,
+     * ensuring proper mutex management and preventing deadlocks in multithreaded environments.
+     *
+     * This alias is used to simplify the locking of shared resources with a `mutex_type`.
+     */
+    
     using mutex_lock = std::lock_guard<mutex_type>;
     
 private:
     
     // A self-deleting thread for processing bonjour replies
+    
+    /**
+     * @brief Class for managing Bonjour service execution in a separate thread.
+     *
+     * The `bonjour_thread` class is responsible for running a Bonjour service in its own
+     * thread. It manages the lifecycle of the thread, including starting the service,
+     * processing events, and stopping the service when required. This class is used to
+     * handle Bonjour operations asynchronously, ensuring non-blocking network service
+     * discovery and advertisement.
+     */
     
     class bonjour_thread
     {
@@ -161,11 +255,60 @@ private:
             DNSServiceRefDeallocate(m_sd_ref);
             delete this;
         }
-               
+        
+        /**
+         * @brief A reference to the Bonjour service instance.
+         *
+         * The `m_sd_ref` member variable holds a `DNSServiceRef`, which is a reference to the
+         * Bonjour service instance managed by the DNS-SD (DNS Service Discovery) API. This reference
+         * is used to control the Bonjour service, such as starting, stopping, or modifying the service.
+         * It represents the connection to the underlying service provided by the Bonjour framework.
+         */
+        
         DNSServiceRef m_sd_ref;
+        
+        /**
+         * @brief A flag indicating whether the Bonjour service is in an invalid state.
+         *
+         * The `m_invalid` member variable is a boolean flag that indicates if the Bonjour service
+         * is in an invalid state. If set to `true`, it means that the service has encountered an
+         * error or issue that renders it non-functional. This flag is used to track the operational
+         * status of the service and prevent further actions if the service is invalid.
+         */
+        
         bool m_invalid;
+        
+        /**
+         * @brief A flag indicating whether an error has occurred in the Bonjour service.
+         *
+         * The `m_error` member variable is a boolean flag that tracks whether an error has occurred
+         * during the operation of the Bonjour service. If set to `true`, it indicates that an error
+         * was encountered and may require corrective action or service termination. This flag helps
+         * monitor the health and operational state of the service.
+         */
+        
         bool m_error;
+        
+        /**
+         * @brief A recursive mutex used to ensure thread-safe access to shared resources.
+         *
+         * The `m_mutex` member variable is a `mutex_type` (typically a `std::recursive_mutex`) that
+         * ensures thread-safe access to shared resources within the class. It prevents race conditions
+         * by allowing only one thread at a time to access critical sections of code, and since it's
+         * a recursive mutex, it allows the same thread to lock it multiple times if necessary.
+         */
+        
         mutex_type m_mutex;
+        
+        /**
+         * @brief A thread object that manages the execution of the Bonjour service in a separate thread.
+         *
+         * The `m_thread` member variable is an instance of `std::thread` that runs the Bonjour service
+         * in a separate thread. This allows the service to operate asynchronously, handling network events
+         * and service discovery without blocking the main application. The thread is responsible for executing
+         * the service loop and ensuring the service runs independently.
+         */
+        
         std::thread m_thread;
     };
     
@@ -449,15 +592,68 @@ protected:
         }
     };
     
+    /**
+     * @brief Template alias for creating a callback type with a specific function and argument indices.
+     *
+     * The `make_callback_type` alias simplifies the creation of a `callback_type` by
+     * automatically deducing the function type (`T::callback`) and associating it with
+     * an object of type `T`, an error handling index (`ErrIdx`), and a list of argument
+     * indices (`Idxs...`). This alias is used to streamline the definition of callback
+     * types in various contexts where a member function needs to be invoked with
+     * specific arguments.
+     *
+     * @tparam T The class type that contains the `callback` function.
+     * @tparam ErrIdx The index of the argument used for error handling or special processing.
+     * @tparam Idxs The indices of the arguments to be passed to the function.
+     */
+    
     template <class T, size_t ErrIdx, size_t ...Idxs>
     using make_callback_type = callback_type<typename T::callback, T, ErrIdx, Idxs...>;
+    
+    /**
+     * @brief A mutable recursive mutex used for thread-safe access to shared resources.
+     *
+     * The `m_mutex` is a mutable `mutex_type` (typically a `std::recursive_mutex`) that
+     * is used to ensure thread-safe access to shared resources within the class. The `mutable`
+     * keyword allows this mutex to be locked or unlocked even within `const` member functions,
+     * enabling synchronization in situations where the logical state of the object is constant,
+     * but thread safety is still required.
+     */
     
     mutable mutex_type m_mutex;
     
 private:
     
+    /**
+     * @brief A string representing the service registration type for the Bonjour service.
+     *
+     * The `m_regtype` member variable holds the service type (registration type)
+     * as a `std::string`, which specifies the type of service being registered with
+     * the Bonjour service (e.g., "_http._tcp."). This string is used when advertising
+     * the service on the network, identifying the protocol and service category.
+     */
+    
     std::string m_regtype;
+    
+    /**
+     * @brief A string representing the domain in which the Bonjour service is registered.
+     *
+     * The `m_domain` member variable holds the domain as a `std::string`, which specifies
+     * the network domain in which the Bonjour service is being registered (e.g., "local.").
+     * This domain defines the scope of service discovery and advertisement, determining where
+     * the service is visible on the network.
+     */
+    
     std::string m_domain;
+    
+    /**
+     * @brief A pointer to a `bonjour_thread` object that manages the Bonjour service in a separate thread.
+     *
+     * The `m_thread` member variable holds a pointer to a `bonjour_thread` object, which is responsible
+     * for running the Bonjour service in a separate thread. This allows the service to operate asynchronously,
+     * handling network events in the background without blocking the main application.
+     * If no thread is running, this pointer is set to `nullptr`.
+     */
     
     bonjour_thread *m_thread;
 };

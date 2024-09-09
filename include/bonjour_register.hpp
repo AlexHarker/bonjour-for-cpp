@@ -17,16 +17,62 @@
 
 // An object for registering a named bonjour service
 
+/**
+ * @class bonjour_register
+ * @brief Manages the registration of a Bonjour service.
+ *
+ * This class is responsible for registering and managing a Bonjour service, including
+ * handling service callbacks and maintaining the service state. It inherits from the
+ * `bonjour_named` class, which provides the basic functionality for managing a named
+ * Bonjour service.
+ *
+ * The `bonjour_register` class extends `bonjour_named` by adding support for service
+ * registration via DNSServiceRegister and handling additional notifications related to
+ * the service lifecycle.
+ */
+
 class bonjour_register : public bonjour_named
 {
 public:
 
     static constexpr auto service = DNSServiceRegister;
     
+    /**
+     * @brief Defines a callback type for DNS service registration replies.
+     *
+     * This alias defines `callback` as the type `DNSServiceRegisterReply`, which is used
+     * as the callback function type for handling replies from DNSServiceRegister.
+     * The callback is invoked when the Bonjour service registration completes, and it
+     * processes any relevant information returned by the DNS service.
+     */
+    
     using callback = DNSServiceRegisterReply;
+    
+    /**
+     * @brief Defines a specialized callback type for the `bonjour_register` class.
+     *
+     * This alias defines `callback_type` as a type created by the `make_callback_type` template,
+     * specifically tailored for the `bonjour_register` class. It constructs a callback type that
+     * maps specific argument positions (2, 1, 3, 4, 5) when invoking the callback function, allowing
+     * for flexible handling of the parameters received in service registration callbacks.
+     *
+     * The `callback_type` is used internally to manage the callbacks associated with the
+     * Bonjour service registration process.
+     */
+    
     using callback_type = make_callback_type<bonjour_register, 2, 1, 3, 4, 5>;
 
     friend callback_type;
+    
+    /**
+     * @struct notify_type
+     * @brief Defines a structure to manage notification callbacks for the Bonjour service.
+     *
+     * The `notify_type` structure holds callback functions that are used to manage various
+     * state changes related to the Bonjour service. It provides members for handling notifications
+     * when the service is stopped, added, or removed. This structure is passed to the
+     * `bonjour_register` class to handle these notifications during the service's lifecycle.
+     */
     
     struct notify_type
     {
@@ -122,8 +168,25 @@ private:
             notify(m_notify.m_remove, this, name, regtype, domain, complete);
     }
     
+    /**
+     * @brief Stores the port number for the Bonjour service.
+     *
+     * This member variable holds the port number as a 16-bit unsigned integer (`uint16_t`)
+     * on which the Bonjour service is registered and accessible. It is typically set during
+     * the initialization of the `bonjour_register` object and used when starting the service.
+     */
+    
     uint16_t m_port;
 
+    /**
+     * @brief Holds the notification callbacks for the Bonjour service.
+     *
+     * This member variable stores an instance of `notify_type`, which contains callback
+     * functions for handling various state changes of the Bonjour service. These include
+     * callbacks for stopping, adding, and removing the service. The `m_notify` member is
+     * used by the `bonjour_register` class to manage notifications during the service's lifecycle.
+     */
+    
     notify_type m_notify;
 };
 
