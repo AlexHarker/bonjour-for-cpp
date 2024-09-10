@@ -84,7 +84,10 @@ public:
     : m_options(options)
     , m_register(name, regtype, domain, port)
     , m_browse(regtype, domain)
-    {}
+    , m_this_service(m_register)
+    {
+        m_this_service.resolve();
+    }
     
     /**
      * @brief Starts the Bonjour service for peer-to-peer communication.
@@ -298,6 +301,11 @@ public:
     }
     
 private:
+
+    std::string resolved_host() const
+    {
+        return m_this_service.host();
+    }
     
     /**
      * @brief Stores the configuration options for the Bonjour peer.
@@ -332,6 +340,8 @@ private:
     
     bonjour_browse m_browse;
     
+    bonjour_service m_this_service;
+
     /**
      * @brief Mutex used for synchronizing access to shared data.
      *
