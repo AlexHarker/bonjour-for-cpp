@@ -1,14 +1,12 @@
 
 /**
  * @file bonjour_named.hpp
- * @brief Represents a named Bonjour service.
+ * @brief Class for representing a named Bonjour service.
  *
- * This file defines the `bonjour_named` class, which represents a Bonjour service
- * by its name, registration type, and domain. It provides functionality for
- * initializing and validating the service name but does not resolve the service.
- * To resolve a service, the `bonjour_service` class should be used. This class
- * extends the `bonjour_base` class, inheriting its core functionality for service
- * management.
+ * This file defines the `bonjour_named` class, which represents a Bonjour service by its name, registration
+ * type, and domain. It provides functionality for initializing and validating the service name but does not
+ * resolve the service. To resolve a service, the `bonjour_service` class should be used. This class extends
+ * the `bonjour_base` class, inheriting its core functionality for service management.
  */
 
 #ifndef BONJOUR_NAMED_HPP
@@ -20,16 +18,13 @@
 #include <list>
 #include <type_traits>
 
-// A representation of a named bonjour service
-// Note that to resolve the named service you should use bonjour_service
-
 /**
  * @class bonjour_named
  * @brief Represents a named Bonjour service, inheriting from bonjour_base.
  *
- * The `bonjour_named` class is a specialized version of `bonjour_base`, which adds the functionality
- * of managing a service name. This class provides methods to handle, compare, and retrieve the
- * name of the Bonjour service.
+ * The `bonjour_named` class is a specialized version of `bonjour_base`, which adds the functionality of
+ * managing a service name. This class provides methods to compare the named service with either individual
+ * 'bonjour_named' objects or lists of objects, and retrieve the stored name of the Bonjour service.
  *
  * Inherits common Bonjour service functionality from the `bonjour_base` class.
  */
@@ -41,12 +36,10 @@ public:
     /**
      * @brief Constructs a bonjour_named object with a specified name, registration type, and domain.
      *
-     * This constructor initializes the bonjour_named object by calling the base class constructor
-     * `bonjour_base` with the provided `regtype` and `domain`. It also validates and assigns the
-     * provided `name` using the `impl::validate_name` method.
+     * This constructor validates and corrects the provided items to ensure that they are correctly formatted.
      *
-     * @param name The name of the Bonjour service. This is validated using `impl::validate_name`.
-     * @param regtype The registration type of the Bonjour service (e.g., "_http._tcp").
+     * @param name The name of the Bonjour service.
+     * @param regtype The registration type of the Bonjour service (e.g., "_tcp").
      * @param domain The domain where the Bonjour service is registered (e.g., "local").
      */
     
@@ -58,9 +51,9 @@ public:
     /**
      * @brief Retrieves the name of the Bonjour service.
      *
-     * This method returns the name of the Bonjour service as a C-style string.
+     * This method returns the name of the Bonjour service as a C-string.
      *
-     * @return A pointer to a constant character array representing the name of the Bonjour service.
+     * @return The name of the Bonjour service as a C-string.
      */
     
     const char *name() const
@@ -84,6 +77,17 @@ public:
         return equal(name(), b.name()) && equal(regtype(), b.regtype()) && equal(domain(), b.domain());
     }
     
+    /**
+        * @brief Finds an element in the list that matches the current Bonjour service.
+        *
+        * This method searches through a list of Bonjour services (or derived classes) to find an element that is
+        * equal to the current instance. It returns an iterator to the matching element if found, or the end
+        * iterator if no match is found.
+        *
+        * @param list A reference to a list of Bonjour services (or derived classes) to search through.
+        * @return An iterator to the matching element if found, or the end iterator if no match is found.
+        */
+
     template <class T, std::enable_if_t<std::is_base_of<bonjour_named, T>::value, bool> = true>
     typename std::list<T>::iterator find(std::list<T>& list) const
     {
@@ -97,13 +101,13 @@ public:
 private:
     
     /**
-     * @brief Compares two C-style strings for equality.
+     * @brief Compares two C-strings for equality.
      *
-     * This method checks if two null-terminated C-style strings are identical by comparing their
+     * This method checks if two null-terminated C-strings are identical by comparing their
      * characters one by one. The comparison is case-sensitive.
      *
-     * @param a A pointer to the first C-style string to compare.
-     * @param b A pointer to the second C-style string to compare.
+     * @param a A pointer to the first C-string to compare.
+     * @param b A pointer to the second C-string to compare.
      * @return `true` if the strings are identical; `false` otherwise.
      */
     
@@ -112,12 +116,7 @@ private:
         return !strcmp(a, b);
     }
     
-    /**
-     * @brief Stores the validated name of the Bonjour service.
-     *
-     * This member variable holds the name of the Bonjour service as a `std::string`.
-     * The name is validated during initialization to ensure it meets the required format.
-     */
+    /** @brief Stores the validated name of the Bonjour service. */
     
     std::string m_name;
 };
