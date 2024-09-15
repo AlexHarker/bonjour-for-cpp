@@ -3,10 +3,8 @@
  * @file bonjour-for-cpp.hpp
  * @brief Master header for including all Bonjour-related components in C++.
  *
- * This file provides a single point of inclusion for all Bonjour service functionalities
- * in C++. It includes headers for browsing, registering, resolving services, and managing
- * Bonjour peers. By including this file, users can access the full suite of Bonjour
- * capabilities within their C++ projects.
+ * This file provides a single point of inclusion for all Bonjour for C++ functionalities. It includes headers for
+ * browsing, registering, resolving, and managing Bonjour services.
  */
 
 #ifndef BONJOUR_FOR_CPP_HPP
