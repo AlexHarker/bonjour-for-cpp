@@ -273,8 +273,6 @@ public:
         peers = m_peers;
     }
     
-private:
-
     /**
      * @brief Retrieves the resolved hostnane of the internal Bonjour service.
      *
@@ -288,6 +286,8 @@ private:
         return m_this_service.host();
     }
     
+private:
+
     /** @brief Stores the configuration options for the Bonjour peer. */
     
     bonjour_peer_options m_options;
